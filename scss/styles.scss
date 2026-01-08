@@ -1,3 +1,6 @@
+@use "modal" as *;
+@use "theme" as *;
+
 :root {
   --edge-gap: 8px;
   --color-link-hover-bg: rgba(205, 205, 205, 0.5);
@@ -57,6 +60,29 @@ h3 {
   font-size: 20px;
   font-weight: 900;
   margin: 0.5em 0 1em;
+
+  &.collapsible {
+     cursor: pointer;
+     user-select: none;
+     display: flex;
+     align-items: center;
+
+     &::before {
+       content: '▼';
+       margin-right: 0.5em;
+       transition: transform 0.2s;
+       font-size: 0.5em;
+     }
+
+     &.collapsed::before {
+       transform: rotate(-90deg);
+     }
+
+     &.collapsed + .apps_loop,
+     &.collapsed + .links_loop {
+       display: none;
+     }
+   }
 }
 
 h4 {
@@ -241,18 +267,18 @@ a:hover {
   }
 
   a {
-    display: block;
-    line-height: 2;
+    display: flex;
+    padding: var(--edge-gap);
+    margin-left: calc(0px - var(--edge-gap));
+    margin-top: 2px;
+    line-height: 1.3em;
+
+    &:hover {
+      background-color: var(--color-link-hover-bg);
+      text-decoration: none;
+    }
   }
 }
-
-/* MODAL */
-
-@import "modal";
-
-/* THEMING */
-
-@import "theme";
 
 /* MEDIA QUERIES */
 

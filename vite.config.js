@@ -66,12 +66,9 @@ export default defineConfig({
   plugins: [
     NO_PWA ? null
     : VitePWA({
-      injectRegister: 'auto',
       registerType: 'autoUpdate',
-      // https://developer.chrome.com/docs/workbox/modules/workbox-build/#generatesw-mode
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        // https://developer.chrome.com/docs/workbox/reference/workbox-build/#property-GeneratePartial-navigateFallback
         navigateFallback: '404.html',
       },
       manifest,

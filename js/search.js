@@ -1,130 +1,126 @@
 import Fuse from 'fuse.js'
 
 const store = {
-  keyword: '',
   searchItems: null,
   fuse: null,
 }
 
+const keywordEl = document.getElementById("keyword")
+const searchInputEl = document.getElementById("search-input")
+const searchEmptyEl = document.getElementById("search-empty")
+
 function loadSearchItems() {
   const items = []
-  // loop .apps_item
   document.querySelectorAll('.apps_item').forEach(el => {
     const nameEl = el.querySelector('.name')
     items.push({
       name: nameEl.textContent,
+      url: el.href,
       el,
       nameEl,
       clsss: 'apps_item',
     })
   })
 
-  // loop .links_item
   document.querySelectorAll('.links_item').forEach(el => {
-    const nameEl = el
     items.push({
-      name: nameEl.textContent,
+      name: el.textContent,
+      url: el.href,
       el,
-      nameEl,
+      nameEl: el,
       clsss: 'links_item',
     })
   })
 
   store.searchItems = items
   store.fuse = new Fuse(items, {
-    keys: ['name'],
+    keys: ['name', 'url'],
     includeScore: true,
     includeMatches: true,
     minMatchCharLength: 1,
-    threshold: 0.2,
+    threshold: 0.1,
   })
 }
 
-const keywordEl = document.getElementById("keyword")
-const regularCharsRe = /\w/
-
-function updateKeyword(key) {
-  // backspace
-  if (key == 8) {
-    if (store.keyword.length > 0) {
-      store.keyword = store.keyword.slice(0, store.keyword.length - 1)
-    }
-  } else if (key == 27) {  // ESC
-    store.keyword = ''
-  } else {
-    // convert key code to string, see https://stackoverflow.com/a/5829387/596206
-    let char = String.fromCharCode((96 <= key && key <= 105) ? key-48 : key)
-    if (!regularCharsRe.test(char)) {
-      char = ''
-    }
-    // console.log('key', key, `|${char}|`)
-
-    if (char) {
-      store.keyword = store.keyword + char
-    }
-  }
-  if (store.keyword) {
-    keywordEl.innerHTML = `<span>${store.keyword}</span>`
+function handleSearchInput(keyword) {
+  if (keyword) {
+    keywordEl.innerHTML = `<span>${keyword}</span>`
   } else {
     keywordEl.innerHTML = ''
   }
-  return store.keyword
-}
 
-function handleKeyPress(e) {
-  var key = e.keyCode || e.which;
-  if (e.ctrlKey || e.metaKey || e.altKey) {
-    // ignore key combination
+  if (keyword.trim() === '') {
+    document.querySelectorAll('.apps_item_wrap, .links_category').forEach(el => {
+      el.classList.remove('hidden')
+    })
+    document.querySelectorAll('.apps, #links').forEach(el => {
+      el.classList.remove('hidden')
+    })
+    store.searchItems.forEach(item => {
+      if (item.nameEl) {
+        item.nameEl.innerHTML = item.name
+      }
+      item.el.classList.remove('matched')
+    })
+    searchEmptyEl.classList.add('hidden')
     return
   }
-  if (key == 9 || key == 13) { // Tab to switch and Enter to open
-      // e.preventDefault();
-      // e.stopPropagation();
-      // use default behavior
-      return
-  } else {
-    const oldKeyword = store.keyword
-    const keyword = updateKeyword(key)
-    // ignore empty
-    if (oldKeyword === keyword && keyword === '') return
 
-    // only search when keyword changes
-    if (keyword !== oldKeyword) {
-      const items = store.fuse.search(keyword)
-      console.log('searched', keyword, items)
-      handleMatchedItems(items)
-    }
-  }
-}
+  const items = store.fuse.search(keyword)
 
-function handleMatchedItems(items) {
-  document.activeElement.blur();
-  // reset tabindex and name text
-  const matchedClass = 'matched'
+  document.querySelectorAll('.apps_item_wrap').forEach(el => {
+    el.classList.add('hidden')
+  })
+  document.querySelectorAll('.links_category').forEach(el => {
+    el.classList.add('hidden')
+  })
+  document.querySelectorAll('.apps, #links').forEach(el => {
+    el.classList.add('hidden')
+  })
+
   store.searchItems.forEach(item => {
-    item.el.setAttribute('tabindex', 0)
-    item.nameEl.innerHTML = item.name
-    item.el.classList.remove(matchedClass)
-  })
-
-  items.forEach((i, index) => {
-    const item = i.item
-    if (index === 0) {
-      item.el.focus();
+    if (item.nameEl) {
+      item.nameEl.innerHTML = item.name
     }
-    const tabindex = index + 1
-    item.el.setAttribute('tabindex', tabindex)
-    item.el.classList.add(matchedClass)
-
-    // because we only have one key to match when initializing Fuse,
-    // matches will only have 1 item
-    highlightText(item.nameEl, i.matches[0])
+    item.el.classList.remove('matched')
   })
+
+  if (items.length === 0) {
+    searchEmptyEl.classList.remove('hidden')
+  } else {
+    searchEmptyEl.classList.add('hidden')
+
+    const visibleAppsSections = new Set()
+    const visibleLinks = false
+
+    items.forEach(i => {
+      const item = i.item
+      const nameMatch = i.matches.find(m => m.key === 'name')
+
+      if (item.clsss === 'apps_item') {
+        const wrap = item.el.closest('.apps_item_wrap')
+        wrap.classList.remove('hidden')
+        const section = item.el.closest('.apps')
+        section.classList.remove('hidden')
+        visibleAppsSections.add(section)
+      }
+
+      if (item.clsss === 'links_item') {
+        const category = item.el.closest('.links_category')
+        category.classList.remove('hidden')
+        const section = item.el.closest('#links')
+        section.classList.remove('hidden')
+      }
+
+      if (nameMatch && item.nameEl) {
+        highlightText(item.nameEl, nameMatch)
+        item.el.classList.add('matched')
+      }
+    })
+  }
 }
 
 function highlightText(el, match) {
-  // console.log('match', match, el)
-  // get the longest part
   match.indices.sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]))
   const pos = match.indices[0]
   const start = pos[0], end = pos[1] + 1
@@ -134,5 +130,15 @@ function highlightText(el, match) {
 
 export function initKeyboardSearch() {
   loadSearchItems()
-  document.addEventListener('keydown', handleKeyPress);
+
+  searchInputEl.addEventListener('input', (e) => {
+    handleSearchInput(e.target.value)
+  })
+
+  searchInputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      searchInputEl.value = ''
+      handleSearchInput('')
+    }
+  })
 }

@@ -118,6 +118,37 @@ a:hover {
   }
 }
 
+#search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 8px 0;
+  font-size: 1em;
+  border: none;
+  background: transparent;
+  color: var(--color-text-pri);
+  outline: none;
+  margin-top: 10px;
+
+  &::placeholder {
+    color: var(--color-text-acc);
+    opacity: 0.8;
+  }
+}
+
+#search-empty {
+  margin-top: 1em;
+
+  h1 {
+    font-size: 4em;
+    font-weight: 700;
+    color: #bc1d1d;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
 .apps_loop {
   display: grid;
   grid-column-gap: 0px;
@@ -135,6 +166,10 @@ a:hover {
     font-weight: 700;
     color: var(--color-text-matched);
   }
+}
+
+.links_item.matched em {
+  background-color: var(--color-link-hover-bg);
 }
 
 .apps_item_wrap {

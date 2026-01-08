@@ -3,6 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "overrides": {
+    "sourcemap-codec": "^1.4.15",
+    "source-map": "^0.7.4"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "rimraf dist && vite build",

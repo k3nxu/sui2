@@ -2,15 +2,16 @@
 
 *a startpage for your server and / or new tab page*
 
-**SUI3** is a streamlined static startpage, forked from [reorx/sui2](https://github.com/reorx/sui2).
+**SUI3** is a streamlined static startpage, the third iteration of the SUI series.
 
-SUI3 strips away the complex backend dependencies (Docker/Live Server) of its predecessor to focus on a pure, lightweight static site experience. It introduces powerful **JSON-based configuration** for themes, icons, and link behaviors, along with significant accessibility, security, and UI improvements.
+### History & Lineage
+1.  **[sui](https://github.com/jeroenpardon/sui)**: The original project.
+2.  **[sui2](https://github.com/reorx/sui2)**: Added keyboard navigation, PWA, and Docker support.
+3.  **SUI3** (This Project): Forked from `reorx/sui2`. Removed complex backend dependencies (Docker/Live Server) to focus on a pure, lightweight static site experience. Added **JSON-based configuration**, security hardening, and accessibility improvements.
 
-What works for **SUI2** also works for **SUI3**, but simpler and faster.
-
-See how keyboard navigation works in action:
-
-<video src="https://user-images.githubusercontent.com/405972/193420471-7454270e-7bcc-43cc-a61d-e8b65e6b09f3.mov"></video>
+### Requirements
+*   **Node.js**: >= 18.0.0 (Recommended: 20+)
+*   **Package Manager**: npm / yarn / pnpm
 
 
 ## Deploy to any static hosting

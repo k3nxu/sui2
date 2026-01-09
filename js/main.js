@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindThemeButtons()
   initKeyboardSearch()
   initCollapsible()
-  setInterval(date, 1000 * 60)
+  setInterval(date, 1000)
   console.log('done DOMContentLoaded', `${new Date() - t0}ms`)
 })
 

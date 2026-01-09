@@ -24,8 +24,8 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          # If your repo is k3nxu/sui2, the path is /sui2/. Change this if you rename the repo.
-          WEBMANIFEST_SCOPE: /sui2/
+          # If your repo is k3nxu/sui3, the path is /sui3/. Change this if you rename the repo.
+          WEBMANIFEST_SCOPE: /sui3/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

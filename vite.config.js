@@ -29,13 +29,18 @@ try {
   }
 }
 
+// Safe access to icons config with fallbacks
+// Note: data is loaded above
+const iconsConfig = (data && data.icons) || {};
+const pwaIcon = iconsConfig.pwa || "icon-512.png";
+
 const manifest = {
   "name": WEBMANIFEST_NAME || "SUI2",
   "short_name": WEBMANIFEST_SHORT_NAME || "sui2",
   "description": WEBMANIFEST_DESCRIPTION || "a startpage for your server and / or new tab page",
   "icons": [
     {
-      "src": "icon-512.png",
+      "src": pwaIcon,
       "type": "image/png",
       "sizes": "512x512"
     }

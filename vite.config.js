@@ -69,6 +69,7 @@ export default defineConfig({
         registerType: 'autoUpdate',
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+          globIgnores: ['**/node_modules/**/*', 'sw.js', 'workbox-*.js', ...(manifest.icons || []).map(i => i.src)],
           navigateFallback: '404.html',
         },
         manifest,
